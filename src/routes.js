@@ -5,6 +5,7 @@ const teacherControl = require('./controllers/TeacherController')
 const managerControl = require('./controllers/ManagerController')
 const profileControl = require('./controllers/profileController')
 const sessionControl = require('./controllers/SessionController')
+const loginControl = require('./controllers/loginController')
 
 route.post('/session', sessionControl.create)
 
@@ -18,13 +19,9 @@ route.get('/profile', profileControl.index)
 route.post('/manager', managerControl.create)
 route.get('/managers', managerControl.index)
 // route.put('/manager/:id', managerControl.update)
-// route.delete('/manager/:id', managerControl.remove);
+// route.delete('/manager/:id', managerControl.remove)
 
 // para testes
-route.post('/teste', function (req, res) {
-  console.log(req.headers)
-
-  res.json(req.headers.authorization)
-})
+route.post('/login', loginControl.sigin)
 
 module.exports = route

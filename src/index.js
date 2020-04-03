@@ -4,9 +4,7 @@ const cors = require('cors')
 
 const app = express()
 
-app.use(cors({
-  origin: 'http://meuap.com.br'
-}))
+app.use(cors())
 app.use(express.json())
 app.use(routes)
 
