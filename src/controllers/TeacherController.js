@@ -1,98 +1,65 @@
-const crypto = require('crypto');
-const connection = require('../database/connectio');
+// const crypto = require('crypto')
+const connection = require('../database/connectio')
 
 module.exports = {
-	async create(req, res) {
+  async create (req, res) {
+    const { registration, cpf, cell, email, name, school, city, confirmed, type } = req.body
+    // const id_manager = req.headers.authorization
 
-		const { registration, cpf, cell, email, full_name, school, city, confirmed, type } = req.body;
-		const id_manager = req.headers.authorization;
+    const data = await connection('teacher').insert({
+      registration,
+      cpf,
+      cell,
+      email,
+      name,
+      school,
+      city,
+      confirmed,
+      type
+    })
+    return res.status(204).json({ msg: 'Valor inserido', data })
+  },
 
-		let data = await connection('teacher').insert({
-			registration,
-			cpf,
-			cell,
-			email,
-			full_name,
-			school,
-			city,
-			confirmed,
-			type,
-		}).then(function(valor){
-			return console.log("Valores", valor);
-		}).catch(function(valor){
-			return console.log("Valor errado", + valor);
-		});
+  async index (req, res) {
+    const { page = 1 } = req.query
 
-		return res.status(204).json({msg: "Valor inserido", valor});
+    const [count] = await connection('teacher').count()
+    console.log(count)
 
-	},
+    const teachers = await connection('teacher')
+      .limit(5)
+      .offset((page - 1) * 5)
+      .select('*')
+    res.header('x-total-count', count['count(*)'])
 
-	async index(req, res) {
-		const { page = 1} = req.query;
+    res.json(teachers)
+  },
 
-		const [count] = await connection('teacher').count();
-		console.log(count);
+  async remove (req, res) {
+    // para deletar um usuário(professor) só ocorrera com permissão
+    // do admin ou gerenciador.
+    const idManager = req.headers.authorization
+    const id = req.params
 
-		const teachers = await connection('teacher')
-		.limit(5)
-		.offset((page - 1) * 5)
-		.select('*');
-		res.header('x-total-count', count['count(*)']);
+    // confirmar o usuário. preciso fazer um tratamento de erro aqui,
+    // caso o usuário não tenha autorização
+    const data = await connection('manager')
+      .where('id', idManager)
+      .select('user')
+      .first()
+      .then(function (e) {
+        return console.log('Erro', e)
+      })
 
-		res.json(teachers);
+    if (data.user !== 'jrodrigo') {
+      return res.status(401).json({ error: 'Usuário não tem permissão para deletar o registro' })
+    } else {
+      await connection('teacher')
+        .where('id', id)
+        .delete()
 
-	},
-
-	// async update(req, res){
-	// 	//posso compara o id ou matrícula do usuário para validar
-	// 	const { id } = req.params;
-
-
-	// 	const teacher = await connection('teacher')
-	// 		.where('id', id)
-
-
-
-	// },
-
-	async remove(req, res) {
-		isUser = false;
-		//para deletar um usuário(professor) só ocorrera com permissão
-		//do admin ou gerenciador. 
-		const id_manager = req.headers.authorization;
-		const id = req.params;
-
-		//confirmar o usuário. preciso fazer um tratamento de erro aqui, 
-		//caso o usuário não tenha autorização
-		const data = await connection('manager')
-			.where('id', id_manager)
-			.select('user')
-			.first()
-			.then(function(e){
-				return console.log("Erro", e);
-			})
-
-		if (data.user != "jrodrigo") {
-			return res.status(401).json({ error: "Usuário não tem permissão para deletar o registro" })
-			console.log("Não reconhece o usuário!");
-		} else {
-
-			await connection('teacher')
-				.where('id', id)
-				.delete()
-
-			return res.status(204).send();
-			// this.isUser = false;
-			console.log('Deletado!');
-		}
-
-
-	}
-
+      return res.status(204).send()
+    }
+  }
 
 }
-
-
-
-
-
