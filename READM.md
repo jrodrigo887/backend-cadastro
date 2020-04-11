@@ -6,7 +6,7 @@
 ## Install
  _Caso deseje utilizar ou testar o projeto, execute o seguinte comando:_  
 
-``` 
+``` node
    npm install
    npm start
  ```
@@ -16,11 +16,20 @@ Obs. Lembrando que a versão do NodeJS instalado na minha máquina é: v10.16.3
 
 
 ### Rotas 
-* base_url:port/__signup__
+ *GET retorna lista de usuários*
+ * base_url:port/api __/user__
 
- * base_url:port/__signin__
+ *GET retorna um usuário por id*
+ * base_url:port/api __/user/id__
 
- * base_url:port/__profile__  
+ *POST cria um usuário*
+ * base_url:port/api __/user__  
+
+  *PUT atualiza usuário por id*
+ * base_url:port/api __/user/id__ 
+
+  *DELETE deleta o usuário por id*
+ * base_url:port/api __/user/id__   
 
 
 
