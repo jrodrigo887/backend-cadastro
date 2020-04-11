@@ -1,7 +1,7 @@
 const Connection = require('../database/connectio')
 
 exports.get = async () => {
-	var res = {}; 
+	var res = {};
 	await Connection('teacher')
 		.select('*')
 		.then((value) => {
@@ -11,14 +11,11 @@ exports.get = async () => {
 			console.error(e)
 			return null
 		})
-		.finally(() => {Connection.destroy() })
+		.finally(() => { Connection.destroy() })
 	return res
-
 }
 
 exports.getById = async (id) => {
-
-
 }
 
 exports.create = async (data) => {

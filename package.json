@@ -1,37 +1,43 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest --watchAll",
-    "test:staged": "jest",
-    "start": "DEBUG=express:* & nodemon src/index.js"
-  },
-  "standard": {
-    "env": [
-      "jest"
-    ]
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "husky": "^4.2.3",
-    "jest": "^25.2.7",
-    "lint-staged": "^10.1.1",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.2",
-    "standard": "^14.3.3"
-  },
-  "dependencies": {
-    "bcrypt": "^4.0.1",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-validator": "^6.4.0",
-    "knex": "^0.20.13",
-    "sqlite3": "^4.1.1"
-  }
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"lint": "./node_modules/.bin/eslint .",
+		"test": "jest --watchAll",
+		"test:staged": "jest",
+		"start": "DEBUG=express:* & nodemon src/index.js"
+	},
+	"standard": {
+		"env": [
+			"jest"
+		]
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"eslint": "^6.8.0",
+		"eslint-config-google": "^0.14.0",
+		"husky": "^4.2.3",
+		"jest": "^25.2.7",
+		"lint-staged": "^10.1.1",
+		"morgan": "^1.10.0",
+		"nodemon": "^2.0.2",
+		"standard": "^14.3.3"
+	},
+	"dependencies": {
+		"bcrypt": "^4.0.1",
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"debug": "^4.1.1",
+		"express": "^4.17.1",
+		"express-validator": "^6.4.0",
+		"http": "0.0.1-security",
+		"jsonwebtoken": "^8.5.1",
+		"knex": "^0.20.13",
+		"mysql": "^2.18.1",
+		"sqlite3": "^4.1.1"
+	}
 }
