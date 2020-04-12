@@ -21,7 +21,8 @@ exports.authorize = function (req, res, next) {
 		jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
 			if (err) {
 				res.status(401).json({
-					success: false, message: 'Token Invalid'
+					success: false, 
+					message: 'Token Invalid'
 				})
 			} else {
 				next()
@@ -36,13 +37,15 @@ exports.isAdmin = function (req, body, next) {
 
 	if (!token) {
 		res.status(401).json({
-			success: false, message: 'Access Restrict'
+			success: false, 
+			message: 'Access Restrict'
 		})
 	} else {
 		jwt.verify(token, process.env.SECRET_KEY, function (err, decoded) {
 			if (err) {
 				res.status(401).json({
-					success: false, message: 'Token Invalid'
+					success: false, 
+					message: 'Token Invalid'
 				})
 			} else {
 
@@ -50,10 +53,13 @@ exports.isAdmin = function (req, body, next) {
 
 					// verificar o tipo de usuário.
 					console.log(decoded)
+
+					//passar para o próximo
 					// next()
 				}else{
 					res.status(401).json({
-						success: false, message: 'Funcionalidade de Administrador'
+						success: false, 
+						message: 'Restrict to Administrator'
 					})
 				}
 			}

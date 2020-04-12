@@ -1,7 +1,7 @@
 
 exports.up = function (knex) {
   return knex.schema.createTable('teacher', function (table) {
-    table.increments('id')
+    table.increments('id').primary()
     table.string('registration').notNullable()
     table.string('cpf').notNullable()
     table.string('cell').notNullable()
@@ -9,12 +9,12 @@ exports.up = function (knex) {
     table.string('full_name').notNullable()
     table.string('school').notNullable()
     table.string('city').notNullable()
-    table.string('type')
-    table.boolean('confirmed')
+	table.string('type')
+	table.string('andress')
+    table.boolean('confirmed').defaultTo(false)
     table.timestamp('created_at').defaultTo(knex.fn.now())
-    table.datetime('date')
-
-    table.string('idManager')
+    table.date('date')
+    table.string('confi_admin')
 
     table.unique(['id', 'cpf', 'registration'])
   })

@@ -1,10 +1,11 @@
-const Connection = require('../database/connectio')
+const connection = require('../database/connectio')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
+
 exports.get = async () => {
 	var res = {};
-	await Connection('users')
+	await connection('users')
 		.select('*')
 		.then((value) => {
 			res = value
@@ -13,7 +14,7 @@ exports.get = async () => {
 			console.error(e)
 			return null
 		})
-		.finally(() => { Connection.destroy() })
+		.finally(() => { connection.destroy() })
 	return res
 
 }
@@ -21,9 +22,10 @@ exports.get = async () => {
 exports.getById = async (id) => {
 	var res = {}
 	console.log(id)
-	await Connection('teacher')
+	await connection('teacher')
 		.where('id', id)
 		.select('full_name', 'email')
+		.first()
 		.then((value) => {
 			res = value
 
@@ -33,40 +35,52 @@ exports.getById = async (id) => {
 			return e
 		})
 		.finally(() => {
-			Connection.destroy()
+			connection.destroy()
 		})
 
 	return res
 }
 
 
-exports.create = async (data) => {
-	console.log(data)
-	const { cpf, cell, email, name, user, date, password } = data
-
-	await bcrypt.hash(password, process.env.SALT_HASH, function (error, password) {
-
-		if (!error) {
-
-			return connection('users').insert({
-				cpf,
-				cell,
-				email,
-				name,
-				user,
-				password,
-				date
+exports.post = async (data) => {
+	// const { cpf, cell, email, name, user, date, password } = data
+	console.log("POST" +  data )
+		bcrypt.hash(data.password, parseInt(process.env.HASH_SALT))
+			.then((e) => {
+				connection('users')
+					.insert({
+						cpf: data.cpf,
+						cell: data.cell,
+						email: data.email,
+						name: data.name,
+						type: data.type,
+						password: e,
+						date: data.date
+					})
+					.then((data) => {
+						console.log(data)
+						return true
+					})
+					.catch((e) => {
+						console.error(e)
+						return false
+					})
+					.finally(() => { connection.destroy()})
 			})
 
-		}
-
-	})
-
-	// await Connection('users')
-	// .insert()
 }
 
 exports.update = (id, data) => {
+
+	return connection('users').insert({
+		cpf,
+		cell,
+		email,
+		name,
+		user,
+		password,
+		date
+	})
 
 }
 

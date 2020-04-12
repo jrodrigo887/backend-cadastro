@@ -15,7 +15,7 @@ Obs. Lembrando que a versão do NodeJS instalado na minha máquina é: v10.16.3
 
 
 
-### Rotas 
+### Routers 
  *GET retorna lista de usuários*
  * base_url:port/api __/user__
 

@@ -5,6 +5,8 @@ const http = require('http')
 const debug = require('debug')
 const logged = require('morgan')
 
+require('dotenv').config()
+
 const bodyparser = require('body-parser')
 
 const app = express()
