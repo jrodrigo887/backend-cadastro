@@ -42,31 +42,31 @@ exports.getById = async (id) => {
 }
 
 
-exports.post = async (data) => {
+exports.create = async (data) => {
 	// const { cpf, cell, email, name, user, date, password } = data
-	console.log("POST" +  data )
-		bcrypt.hash(data.password, parseInt(process.env.HASH_SALT))
-			.then((e) => {
-				connection('users')
-					.insert({
-						cpf: data.cpf,
-						cell: data.cell,
-						email: data.email,
-						name: data.name,
-						type: data.type,
-						password: e,
-						date: data.date
-					})
-					.then((data) => {
-						console.log(data)
-						return true
-					})
-					.catch((e) => {
-						console.error(e)
-						return false
-					})
-					.finally(() => { connection.destroy()})
-			})
+	console.log("POST" + data)
+	bcrypt.hash(data.password, parseInt(process.env.HASH_SALT))
+		.then((e) => {
+			connection('users')
+				.insert({
+					cpf: data.cpf,
+					cell: data.cell,
+					email: data.email,
+					name: data.name,
+					type: data.type,
+					password: e,
+					date: data.date
+				})
+				.then((data) => {
+					console.log(data)
+					return true
+				})
+				.catch((e) => {
+					console.error(e)
+					return false
+				})
+				.finally(() => { connection.destroy() })
+		})
 
 }
 
@@ -86,4 +86,23 @@ exports.update = (id, data) => {
 
 exports.delete = (id) => {
 
+}
+
+// validar o login do usuário
+exports.auth = async (password, email) => {
+	var result = false;
+
+	await connection('users')
+		.where('email', email)
+		.select('name', 'email', 'password')
+		.then((value) => {
+			const data = value[0]
+
+			return result = bcrypt.compare(password, data.password )
+
+		})
+	//entrar na conta do usuário e comparar a senha. 
+	console.log("Teste " + result)
+
+	return result;
 }

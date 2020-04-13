@@ -19,6 +19,7 @@ route.get('/', (req, res, next) => {
 	})
 })
 
+
 route.use('/user', userRouter)
 
 route.use('/teacher', teacherRouter)

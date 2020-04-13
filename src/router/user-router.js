@@ -28,6 +28,7 @@ router.post('/', [
 		.isLength({ min: 2, max: 15 })	
 ], controller.post)
 
+router.post('/authenticate', controller.authenticate)
 router.put('/:id', controller.put)
 router.delete('/', controller.delete)
 

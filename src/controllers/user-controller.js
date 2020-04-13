@@ -1,6 +1,7 @@
 const repositorie = require('../reposotories/users-respository')
 const User = require('../models/User')
 const { validationResult } = require('express-validator')
+const authService = require('../services/auth-service')
 
 exports.get = async (req, res, next) => {
 
@@ -52,7 +53,7 @@ exports.post = async (req, res, next) => {
 
 	try {
 
-		await repositorie.post(addUse)
+		await repositorie.create(addUse)
 		res.status(200).send({
 			success: true,
 			message: 'Saved successfully.'
@@ -73,4 +74,37 @@ exports.put = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
 
+}
+
+exports.authenticate = async (req, res, next ) =>{ 
+
+	const { email, password } = req.body
+
+	try{
+		console.log(password)
+
+		const res = await repositorie.auth(password, email)
+
+		//comparado a senha e email, gerar token para o usuário
+		if(!res){
+			res.status(404).send({
+				success: false,
+				message: 'User or password invalid.'
+			})
+			return
+		}
+
+		const token = await authService.generationToken({
+			// add data no token.
+
+
+		})
+
+		console.log("Resposta controll " + res)
+
+	}catch(e){
+
+		console.log(e)
+
+	}
 }
