@@ -12,5 +12,8 @@
         "ecmaVersion": 2018
     },
     "rules": {
+		"lint": "./node_modules/.bin/eslint .",
+		"test": "jest --watchAll",
+		"test:staged": "jest"
     }
 }
