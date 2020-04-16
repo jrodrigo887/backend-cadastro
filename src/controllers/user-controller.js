@@ -1,4 +1,4 @@
-const repositorie = require('../reposotories/users-respository')
+const repository = require('../reposotories/users-respository')
 const User = require('../models/User')
 const { validationResult } = require('express-validator')
 const authService = require('../services/auth-service')
@@ -6,7 +6,7 @@ const authService = require('../services/auth-service')
 exports.get = async (req, res, next) => {
 
 	try {
-		const data = await repositorie.get();
+		const data = await repository.get();
 		res.status(200).json(data)
 
 	} catch (error) {
@@ -22,9 +22,11 @@ exports.getById = async (req, res, next) => {
 	const { id } = req.params
 
 	try {
-
-		const data = await repositorie.getById(id)
-		res.status(200).send(data)
+		const data = await repository.getById(id)
+		res.status(200).send({
+			success: true,
+			data
+		})
 
 	} catch (e) {
 		res.status(500).send({
@@ -53,7 +55,7 @@ exports.post = async (req, res, next) => {
 
 	try {
 
-		await repositorie.create(addUse)
+		await repository.create(addUse)
 		res.status(200).send({
 			success: true,
 			message: 'Saved successfully.'
@@ -70,41 +72,138 @@ exports.post = async (req, res, next) => {
 
 exports.put = async (req, res, next) => {
 
+	try {
+		var result = await repository.update(req.params.id, req.body)
+
+		console.log(result)
+		if (result) {
+			res.status(200).send({
+				success: true,
+				message: 'User updtated successfully.'
+			})
+		}
+
+	} catch (e) {
+		console.error(e)
+		res.status(500).send({
+			success: false,
+			message: 'Fail your request.'
+		})
+
+	}
 }
 
 exports.delete = async (req, res, next) => {
+	const id = req.params.id
+	
+	try {
+		var result = await repository.delete(id)
 
+		console.log(result)
+
+		res.status(404).send({
+			success: true,
+			message: 'Client deleted'
+		})
+
+
+	} catch (e) {
+		console.error(e)
+
+		res.status(404).send({
+			success: false,
+			message: 'Could not delete.'
+		})
+
+	}
 }
 
-exports.authenticate = async (req, res, next ) =>{ 
+exports.authenticate = async (req, res, next) => {
 
 	const { email, password } = req.body
 
-	try{
-		console.log(password)
+	try {
 
-		const res = await repositorie.auth(password, email)
+		const custom = await repository.auth(password, email)
 
+		console.log("Resultado: " + JSON.stringify(custom.result))
+		console.log("Dados: " + JSON.stringify(custom.data))
 		//comparado a senha e email, gerar token para o usuário
-		if(!res){
+		if (!custom.result) {
 			res.status(404).send({
 				success: false,
-				message: 'User or password invalid.'
+				message: 'Email or password invalid.'
 			})
 			return
 		}
 
+		const user = custom.data
 		const token = await authService.generationToken({
-			// add data no token.
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			type: user.type
+		})
 
+		res.status(201).send({
+			token: token,
+			data: {
+				email: user.email,
+				name: user.name
+			}
+		})
+
+	} catch (e) {
+
+		res.status(500).send({
+			success: false,
+			message: 'Error processing your request'
+		})
+
+	}
+}
+
+exports.refreshToken = async (req, res, next) => {
+
+	try {
+
+		const token = req.body.token || req.query.token || req.headers['x-acess-token']
+		const data = await authService.decodeToken(token)
+
+		const custom = await repository.getById(data.id)
+
+		if (!custom) {
+			res.status(404).send({
+				success: false,
+				message: 'Client not found'
+			})
+
+			return
+		}
+
+		console.log(custom)
+
+		const tokenData = await authService.generationToken({
+			id: custom.id,
+			email: custom.email,
+			name: custom.name,
+			type: custom.type
 
 		})
 
-		console.log("Resposta controll " + res)
+		res.status(201).send({
+			token: tokenData,
+			data: {
+				email: user.email,
+				name: user.name
+			}
+		})
 
-	}catch(e){
-
-		console.log(e)
-
+	} catch (e) {
+		res.status(500).send({
+			success: false,
+			message: 'Fail your request'
+		})
 	}
+
 }

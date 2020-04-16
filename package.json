@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node ./src/index.js"
+		"start": "nodemon node ./src/index.js"
 	},
 	"standard": {
 		"env": [
@@ -17,7 +17,6 @@
 	"devDependencies": {
 		"eslint": "^6.8.0",
 		"eslint-config-google": "^0.14.0",
-		"husky": "^4.2.3",
 		"jest": "^25.2.7",
 		"lint-staged": "^10.1.1",
 		"morgan": "^1.10.0",
@@ -36,6 +35,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"knex": "^0.20.13",
 		"mysql": "^2.18.1",
-		"sqlite3": "^4.1.1"
+		"mysql2": "^2.1.0",
+		"npm": "^6.14.4"
 	}
 }

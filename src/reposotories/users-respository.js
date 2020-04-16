@@ -1,7 +1,7 @@
 const connection = require('../database/connectio')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
-
+const user = 'users'
 
 exports.get = async () => {
 	var res = {};
@@ -22,9 +22,9 @@ exports.get = async () => {
 exports.getById = async (id) => {
 	var res = {}
 	console.log(id)
-	await connection('teacher')
+	await connection('users')
 		.where('id', id)
-		.select('full_name', 'email')
+		.select('id', 'name', 'email', 'type')
 		.first()
 		.then((value) => {
 			res = value
@@ -67,42 +67,73 @@ exports.create = async (data) => {
 				})
 				.finally(() => { connection.destroy() })
 		})
-
 }
 
+// -------- UPDTATE -----------
 exports.update = (id, data) => {
-
-	return connection('users').insert({
-		cpf,
-		cell,
-		email,
-		name,
-		user,
-		password,
-		date
-	})
-
+	const { name, type, email } = data
+	return connection('users')
+		.where('id', id)
+		.update({
+			name,
+			type,
+			email
+		})
+		.then((value) => {
+			return value
+		})
+		.finally(() => {
+			connection.destroy()
+		})
 }
 
+// -------- DELETE ----------
 exports.delete = (id) => {
 
+	return connection(user)
+		.where('id', id)
+		.first()
+		.del()
+		.then((value) => {
+			return value
+		})
+		.catch((e) => {
+			return e
+		})
+		.finally(() => {
+			connection.destroy()
+		})
+
 }
 
-// validar o login do usuário
+// -------- validar o login do usuário -------
 exports.auth = async (password, email) => {
-	var result = false;
+	var result = false
+	var data = {}
 
 	await connection('users')
 		.where('email', email)
-		.select('name', 'email', 'password')
+		.select('*')
 		.then((value) => {
-			const data = value[0]
+			data = value[0]
 
-			return result = bcrypt.compare(password, data.password )
-
+			return bcrypt.compare(password, data.password)
+				.then((vl) => {
+					result = vl;
+					console.log('Data: ' + data)
+				})
 		})
-	//entrar na conta do usuário e comparar a senha. 
-	console.log("Teste " + result)
+		.catch((e) => {
+			return console.error(e)
+		})
+		.finally(() => {
+			connection.destroy()
+		})
 
-	return result;
+
+	if (result == false) {
+		return { result, data: null }
+	}
+
+	return { result, data }
 }

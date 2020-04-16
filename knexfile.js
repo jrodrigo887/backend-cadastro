@@ -1,48 +1,60 @@
+require('dotenv').config(
+	{path: '.env'}
+);
+
 // Update with your config settings.
 
 module.exports = {
 
-  development: {
-    client: 'sqlite3',
-    connection: {
-      filename: './src/database/db.sqlite'
-    },
-    migrations: {
-      directory: './src/database/migrations'
-    },
-    useNullAsDefault: true
-  },
+	development: {
+		client: 'mysql2',
+		connection: {
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_DATABASE,
+			insecureAuth: true
 
-  staging: {
-    client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user: 'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  },
+		},
+		migrations: {
+			directory: './src/database/migrations'
+		},
+		useNullAsDefault: true
+	},
 
-  production: {
-    client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user: 'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
+	test: {
+		filename: './src/database/db.sqlite'
+	},
+
+	staging: {
+		client: 'mysql',
+		connection: {
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_DATABASE,
+			insecureAuth: true
+
+		},
+		migrations: {
+			tableName: './src/database/migrations'
+		}
+	},
+
+	production: {
+		client: 'mysql',
+		connection: {
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_DATABASE,
+			insecureAuth: true
+
+		},
+		migrations: {
+			directory: './src/database/migrations'
+		},
+		useNullAsDefault: true
+	}
 
 }
